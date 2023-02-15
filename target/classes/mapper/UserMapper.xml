@@ -6,10 +6,32 @@
     <sql id="userFields">
         id, username, password, salt, email, type, status, activation_code as activationCode, header_url as headerURL, create_time as createTime
     </sql>
+
+    <sql id="insertFields">
+        username, password, salt, email, type, status, activation_code, header_url, create_time
+    </sql>
     <select id="getUserById" resultType="User">
         select <include refid="userFields"></include>
         from user
         where id = #{id}
     </select>
+
+    <select id="getUserByName" resultType="User">
+        select <include refid="userFields"></include>
+        from user
+        where username=#{name}
+    </select>
+
+
+    <select id="getUserByEmail" resultType="User">
+        select <include refid="userFields"></include>
+        from user
+        where email=#{email}
+    </select>
+
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
+        insert into user(<include refid="insertFields"></include>)
+        values(#{userName}, #{password}, #{salt}, #{email}, #{type}, #{status}, #{activationCode},#{headerURL},#{createTime})
+    </insert>
 
 </mapper>

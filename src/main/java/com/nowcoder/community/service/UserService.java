@@ -2,6 +2,7 @@ package com.nowcoder.community.service;
 
 import com.nowcoder.community.dao.UserMapper;
 import com.nowcoder.community.entity.User;
+import com.nowcoder.community.util.CommunityConstant;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.MailClient;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +18,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Service
-public class UserService {
+public class UserService implements CommunityConstant {
     @Autowired
     private UserMapper userMapper;
 
@@ -72,6 +73,7 @@ public class UserService {
         u = userMapper.getUserByEmail(user.getEmail());
         if (u != null) {
             map.put("emailMsg", "邮箱已被注册！");
+            return map;
         }
         //进行注册
         user.setSalt(CommunityUtil.generateUUID().substring(0, 5));
@@ -79,7 +81,7 @@ public class UserService {
         user.setType(0);
         user.setStatus(0);
         user.setActivationCode(CommunityUtil.generateUUID());
-        user.setHeaderURL(String.format("https://images.nowcoder.com/head/%dt.png" + new Random().nextInt(1000)));
+        user.setHeaderURL(String.format("https://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000)));
         user.setCreateTime(new Date());
         //在user表中添加用户信息
         userMapper.insertUser(user);
@@ -92,5 +94,20 @@ public class UserService {
         String content = templateEngine.process("/mail/activation", context);
         mailClient.sendMail(user.getEmail(),content,"账号激活");
         return map;
+    }
+
+    //激活功能
+    public int activation(int userId, String code) {
+        User user = userMapper.getUserById(userId);
+
+        if (user.getStatus() == 1) {
+            return ACTIVATION_REPEAT;
+        }
+        else if (user.getActivationCode().equals(code)) {
+            return ACTIVATION_SUCCESS;
+        }
+        else {
+            return ACTIVATION_FAILURE;
+        }
     }
 }

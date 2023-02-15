@@ -29,7 +29,7 @@
         where email=#{email}
     </select>
 
-    <insert id="insertUser">
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
         insert into user(<include refid="insertFields"></include>)
         values(#{userName}, #{password}, #{salt}, #{email}, #{type}, #{status}, #{activationCode},#{headerURL},#{createTime})
     </insert>
