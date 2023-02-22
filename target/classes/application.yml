@@ -28,7 +28,7 @@ mybatis:
 # logger
 logging:
   level:
-    com.nowcoder.community: warn
+    com.nowcoder.community: debug
 
 #community
 community:
