@@ -9,6 +9,7 @@ import java.util.List;
 
 @Service
 public class DiscussPostService {
+
     @Autowired
     private DiscussPostMapper discussPostMapper;
 
@@ -17,10 +18,8 @@ public class DiscussPostService {
         return discussPostMapper.getDiscussPosts(userId, offset, limit);
     }
 
-    public int findDicussPostRows(int id) {
+    public int findDiscussPostRows(int id) {
         return discussPostMapper.getDiscussPostRows(id);
     }
-
-
 
 }

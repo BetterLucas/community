@@ -28,7 +28,7 @@ public class HomeController {
     public String getIndexPage(Model model, Page page){
         //方法调用前，springmvc会自动实例化Model和Page，并将Page注入到Model
         //所以在thymeleaf中可以直接访问page对象中的数据
-        page.setRows(discussPostService.findDicussPostRows(0));
+        page.setRows(discussPostService.findDiscussPostRows(0));
         page.setPath("/index");
 
 
@@ -47,4 +47,5 @@ public class HomeController {
         model.addAttribute("discussPosts",discussposts);
         return "/index";
     }
+
 }
