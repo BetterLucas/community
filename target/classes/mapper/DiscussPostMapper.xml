@@ -6,6 +6,11 @@
     <sql id="selectFields">
         id, user_id as userId, title, content, type, status, create_time as createTime, comment_count as commentCount, score
     </sql>
+
+    <sql id="insertFields">
+        user_id, title, content, type, status, create_time, comment_count, score
+    </sql>
+
     <select id="getDiscussPosts" resultType="DiscussPost">
          select <include refid="selectFields"></include>
          from discuss_post
@@ -24,6 +29,11 @@
             and user_id = #{userId}
         </if>
     </select>
+
+    <insert id="insertDiscussPost" useGeneratedKeys="true" keyProperty="id">
+        insert into discuss_post(<include refid="insertFields"></include>)
+        value(#{userId}, #{title}, #{content}, #{type}, #{status}, #{createTime}, #{commentCount}, #{score})
+    </insert>
 
 
 </mapper>
