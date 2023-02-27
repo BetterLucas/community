@@ -63,4 +63,9 @@ public class MapperTest {
 
 
     }
+    @Test
+    public void testMD5() {
+        String s = CommunityUtil.md5("456024e8");
+        System.out.println(s);
+    }
 }

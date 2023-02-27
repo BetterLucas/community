@@ -3,10 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nowcoder.community.dao.LoginTicketMapper">
+    <sql id="getFields">
+        id, user_id as userId, ticket, status, expired
+    </sql>
 
     <select id="getTicket" resultType="LoginTicket">
-        select * from
-        login_ticket
+        select <include refid="getFields"></include>
+        from login_ticket
         where
         ticket=#{ticket}
     </select>

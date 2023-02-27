@@ -34,6 +34,7 @@ logging:
 community:
   path:
     domain: http://localhost:8080
+    upload: E:/JavaProject/Community/upload
 server:
   servlet:
     context-path: /community

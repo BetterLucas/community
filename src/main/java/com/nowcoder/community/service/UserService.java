@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import sun.security.util.Password;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 import java.util.*;
 
 @Service
@@ -152,6 +152,7 @@ public class UserService implements CommunityConstant {
         //成功时，生成登录凭证ticket
         String ticket = CommunityUtil.generateUUID();
         LoginTicket t = new LoginTicket();
+        //0 为有效，-1为失效
         t.setStatus(0);
         t.setUserId(u.getId());
         t.setTicket(ticket);
@@ -168,4 +169,18 @@ public class UserService implements CommunityConstant {
     public void signOut(String ticket) {
         ticketMapper.updateStatus(ticket, -1);
     }
+
+    //更改图片路径
+    public int updateHeaderURL(String headerUrl, String userName) {
+        return userMapper.updateUrl(userName,headerUrl);
+    }
+
+    //更改密码
+    public int updatePassword(String username, String password) {
+
+        User u = userMapper.getUserByName(username);
+        return userMapper.updatePassword(username, password);
+    }
+
+
 }
