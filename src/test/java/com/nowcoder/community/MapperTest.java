@@ -1,5 +1,6 @@
 package com.nowcoder.community;
 
+import com.nowcoder.community.dao.CommentMapper;
 import com.nowcoder.community.dao.DiscussPostMapper;
 import com.nowcoder.community.dao.LoginTicketMapper;
 import com.nowcoder.community.dao.UserMapper;
@@ -21,6 +22,9 @@ public class MapperTest {
     public DiscussPostMapper discussPostMapper;
     @Autowired
     public UserMapper userMapper;
+
+    @Autowired
+    private CommentMapper commentMapper;
 
     @Autowired
     public LoginTicketMapper loginTicketMapper;
@@ -67,5 +71,10 @@ public class MapperTest {
     public void testMD5() {
         String s = CommunityUtil.md5("456024e8");
         System.out.println(s);
+    }
+
+    @Test
+    public void test() {
+        System.out.println(commentMapper.getComments(1,228, 0, 3));
     }
 }
