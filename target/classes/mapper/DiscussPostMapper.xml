@@ -21,6 +21,7 @@
          order by type desc, create_time desc
          limit #{offset}, #{limit}
     </select>
+
     <select id="getDiscussPostRows" resultType="int">
         select count(id)
         from discuss_post
@@ -28,6 +29,12 @@
         <if test="userId!=0">
             and user_id = #{userId}
         </if>
+    </select>
+
+    <select id="getDiscussPostById" resultType="DiscussPost">
+        select <include refid="selectFields"></include>
+        from discuss_post
+        where id=#{id}
     </select>
 
     <insert id="insertDiscussPost" useGeneratedKeys="true" keyProperty="id">
