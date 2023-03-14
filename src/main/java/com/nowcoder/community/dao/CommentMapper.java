@@ -13,4 +13,9 @@ public interface CommentMapper {
 
     //查询所有评论，并分页
     List<Comment> getComments(int entityType, int entityId, int offset, int limit);
+
+    //添加评论
+    int insertComment(Comment comment);
+
+
 }

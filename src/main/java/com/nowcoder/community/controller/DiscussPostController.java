@@ -7,11 +7,11 @@ import com.nowcoder.community.entity.Page;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.CommentService;
 import com.nowcoder.community.service.DiscussPostService;
+import com.nowcoder.community.service.LikeService;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityConstant;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHolder;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +37,9 @@ public class DiscussPostController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private LikeService likeService;
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseBody
@@ -68,6 +71,21 @@ public class DiscussPostController {
         User user = userService.findUserById(post.getUserId());
         model.addAttribute("user", user);
 
+        //查询当前登录的用户, 点赞应该使用当前登录的id，不能使用帖子作者的id
+        User host = holder.getUser();
+
+        //点赞数量
+        long likeCount = likeService.findEntityLikeCount(CommunityConstant.ENTITY_TYPE_POST, discussPostId);
+        model.addAttribute("likeCount", likeCount);
+
+        //点赞状态
+        if (host != null) {
+            int status = likeService.findUserLikeStatusForEntity(host.getId(), CommunityConstant.ENTITY_TYPE_POST, discussPostId);
+            model.addAttribute("likeStatus", status);
+        }
+
+
+//        System.out.println(post.getCommentCount());
         //处理帖子评论的逻辑
         page.setLimit(5);
         page.setPath("/discuss/detail/" + discussPostId);
@@ -85,6 +103,13 @@ public class DiscussPostController {
                 Map<String, Object> commentVO = new HashMap<>();
                 commentVO.put("comment", comment);
                 commentVO.put("user", userService.findUserById(comment.getUserId()));
+                //点赞
+                likeCount = likeService.findEntityLikeCount(CommunityConstant.ENTITY_TYPE_COMMENT, comment.getId());
+                commentVO.put("likeCount", likeCount);
+                if (host != null) {
+                    int status = likeService.findUserLikeStatusForEntity(host.getId(), CommunityConstant.ENTITY_TYPE_COMMENT, comment.getId());
+                    commentVO.put("status", status);
+                }
 
                 //查询comment的回复,不进行分页
                 List<Comment> reply = commentService.findComments(CommunityConstant.ENTITY_TYPE_COMMENT,
@@ -97,7 +122,15 @@ public class DiscussPostController {
                     replyVO.put("user", userService.findUserById(r.getUserId()));
                     //回复的目标
                     User target = r.getTargetId() == 0 ? null : userService.findUserById(r.getTargetId());
-                    replyVO.put("target", target);
+                    replyVO.put("target", target); //target为0说明仅是对该评论的回复，并未回复某个具体的人
+
+                    //回复的点赞
+                    likeCount = likeService.findEntityLikeCount(CommunityConstant.ENTITY_TYPE_COMMENT, r.getId());
+                    replyVO.put("likeCount", likeCount);
+                    if (host != null) {
+                        int status = likeService.findUserLikeStatusForEntity(host.getId(), CommunityConstant.ENTITY_TYPE_COMMENT, r.getId());
+                        replyVO.put("status", status);
+                    }
 
                     replyVOList.add(replyVO);
                 }
@@ -120,4 +153,5 @@ public class DiscussPostController {
         return "/site/discuss-detail";
 
     }
+
 }

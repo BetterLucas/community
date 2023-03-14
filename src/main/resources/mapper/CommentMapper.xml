@@ -8,6 +8,10 @@
         id, user_id as userId, entity_type as entityType, entity_id as entityId, target_id as targetId, content, status, create_time as createTime
     </sql>
 
+    <sql id="insertFields">
+        user_id, entity_type, entity_id, target_id, content, status, create_time
+    </sql>
+
     <select id="getCommentsRows" resultType="int">
         select count(id)
         from comment
@@ -26,4 +30,10 @@
         limit #{offset}, #{limit}
 
     </select>
+
+
+    <insert id="insertComment" parameterType="Comment" keyProperty="id">
+        insert into comment(<include refid="insertFields"></include>)
+        value(#{userId},#{entityType},#{entityId},#{targetId},#{content},#{status},#{createTime})
+    </insert>
 </mapper>

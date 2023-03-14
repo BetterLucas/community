@@ -9,7 +9,7 @@ public class Comment {
     //抽象评论实体的类型，方便复用（比如对帖子的评论、对评论的评论、对课程的评论等等）
     private int entityType;
 
-    //具体的目标id
+    //具体的目标(比如帖子的、课程的、评论的)id
     private int entityId;
     //评论回复的Id，指向某个user
     private int targetId;
